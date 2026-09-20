@@ -1,0 +1,9 @@
+{
+  "modelVersion": "6.0.0",
+  "description": "个人工作看板 HarmonyOS 7 原生客户端",
+  "dependencies": {},
+  "devDependencies": {
+    "@ohos/hvigor": "6.0.0",
+    "@ohos/hvigor-ohos-plugin": "6.0.0"
+  }
+}

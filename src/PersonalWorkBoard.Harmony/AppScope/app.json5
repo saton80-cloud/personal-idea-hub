@@ -1,0 +1,10 @@
+{
+  "app": {
+    "bundleName": "com.saton80.personalworkboard.harmony",
+    "vendor": "saton80",
+    "versionCode": 30000,
+    "versionName": "0.3.0",
+    "icon": "$media:app_icon",
+    "label": "$string:app_name"
+  }
+}

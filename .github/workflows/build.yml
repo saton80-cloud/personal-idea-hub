@@ -10,6 +10,13 @@ permissions:
   contents: read
 
 jobs:
+  harmony-source-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Validate HarmonyOS project and API contract wiring
+        run: node scripts/validate-harmony-project.mjs
+
   server-and-tests:
     runs-on: ubuntu-latest
     steps:

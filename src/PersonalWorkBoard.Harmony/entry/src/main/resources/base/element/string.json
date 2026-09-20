@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "个人工作看板 HarmonyOS 客户端"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "个人工作看板主窗口"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "个人工作看板"
+    }
+  ]
+}

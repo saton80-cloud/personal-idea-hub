@@ -4,10 +4,11 @@
 
 ```text
 Windows桌面端 ─┐
-               ├─ 局域网 HTTP API ─ Nginx ─ ASP.NET Core ─ MySQL
-Android手机端 ─┘
+Android手机端 ──┼─ 局域网 HTTP API ─ Nginx ─ ASP.NET Core ─ MySQL
+HarmonyOS手机端 ┘
 
-每个客户端：MAUI界面 + SQLite缓存 + 待同步队列
+Windows/Android：MAUI界面 + SQLite缓存 + 待同步队列
+HarmonyOS：ArkUI界面 + Preferences应用私有缓存 + 待同步队列
 ```
 
 PC和手机不直接互相传数据库。二维码只让手机取得同一个服务器地址和短效配对授权；配对后两端都与服务器同步，因此不会依赖PC一直开机。
@@ -26,7 +27,7 @@ PC和手机不直接互相传数据库。二维码只让手机取得同一个服
 1. PC使用账号密码登录服务器。
 2. PC向服务器申请5分钟一次性票据。
 3. PC显示`pwb://pair?...`二维码。
-4. Android扫码后直接向服务器兑换票据。
+4. Android或HarmonyOS手机扫码后直接向服务器兑换票据。
 5. 服务器标记票据已使用，为手机签发独立设备令牌。
 6. 手机立即推送离线修改并拉取最新数据。
 

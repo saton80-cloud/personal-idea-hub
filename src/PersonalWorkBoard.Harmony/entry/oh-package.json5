@@ -1,0 +1,9 @@
+{
+  "name": "entry",
+  "version": "0.3.0",
+  "description": "个人工作看板 HarmonyOS 入口模块",
+  "main": "",
+  "author": "saton80",
+  "license": "UNLICENSED",
+  "dependencies": {}
+}

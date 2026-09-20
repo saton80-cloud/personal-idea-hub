@@ -1,0 +1,3 @@
+# Keep entry ability names used by module.json5.
+-keep-global-name
+EntryAbility
