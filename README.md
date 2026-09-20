@@ -73,4 +73,4 @@ GitHub Actions会生成Linux服务端、Windows桌面端和Android APK三个Arti
 
 ## 当前交付状态
 
-V0.2.0为多端基础版源码。当前执行环境未安装.NET/MAUI SDK，必须由GitHub Actions或装有Visual Studio 2026/.NET 10 MAUI workload的Windows电脑完成首次真实编译与设备验收。
+V0.2.0为可编译的多端基础版：GitHub Actions已完成领域测试、Linux服务端自包含发布、Windows桌面端发布和Android APK构建。尚需在实际Rocky Linux 8.9服务器、Windows电脑和Android手机上完成安装、扫码、断网重连与冲突场景验收。

@@ -39,7 +39,7 @@ public sealed class ReminderService(LocalStore store)
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
             if (Application.Current?.Windows.FirstOrDefault()?.Page is Page page)
-                await page.DisplayAlertAsync(title, message, "知道了");
+                await page.DisplayAlert(title, message, "知道了");
         });
     }
 }

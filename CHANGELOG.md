@@ -8,6 +8,8 @@
 - 新增Rocky Linux 8.9 + MySQL局域网中心服务
 - 新增SQLite离线缓存、变更队列、版本冲突和增量同步
 - 新增PC一次性二维码与Android扫码配对
+- 新增今日任务快速记录、优先级、预计时长和每日计划/复盘提醒
+- 升级SQLite原生依赖，移除已知高危版本
 - 新增Nginx直接IP访问、systemd服务、自动备份和回退升级脚本
 - 新增GitHub Actions三端构建流程
 

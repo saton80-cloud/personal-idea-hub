@@ -22,7 +22,7 @@ public partial class SettingsPage : ContentPage
 
     private async void OnLogoutClicked(object? sender, EventArgs e)
     {
-        if (!await DisplayAlertAsync("退出设备", "本机离线缓存会保留，但需要重新登录或扫码才能继续同步。", "退出", "取消")) return;
+        if (!await DisplayAlert("退出设备", "本机离线缓存会保留，但需要重新登录或扫码才能继续同步。", "退出", "取消")) return;
         await _api.LogoutAsync();
         ((App)Application.Current!).ShowLogin();
     }

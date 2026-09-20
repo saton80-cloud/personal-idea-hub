@@ -35,6 +35,32 @@
                     <Label Text="今天要做" Style="{StaticResource SectionTitle}" />
                     <Label Grid.Column="1" Text="上午计划 09:00 · 晚间复盘 20:30" Style="{StaticResource Muted}" />
                 </Grid>
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Border WidthRequest="36" HeightRequest="36" BackgroundColor="{StaticResource PrimarySoft}" StrokeThickness="0">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="11" /></Border.StrokeShape>
+                                <Label Text="+" TextColor="{StaticResource Primary}" FontSize="22" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="添加今日任务" FontAttributes="Bold" />
+                                <Label Text="先记下最小可执行动作，预计时长可随时调整。" Style="{StaticResource Muted}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        <Grid ColumnDefinitions="{OnIdiom Desktop='*,170,120,Auto', Phone='*'}"
+                              RowDefinitions="{OnIdiom Desktop='Auto', Phone='Auto,Auto,Auto,Auto'}"
+                              ColumnSpacing="10" RowSpacing="10">
+                            <Entry Text="{Binding NewTaskTitle}" Placeholder="今天要完成什么？" ReturnType="Done" />
+                            <Picker Grid.Column="{OnIdiom Desktop=1, Phone=0}" Grid.Row="{OnIdiom Desktop=0, Phone=1}"
+                                    ItemsSource="{Binding Priorities}" SelectedItem="{Binding NewTaskPriority}" Title="优先级" />
+                            <Entry Grid.Column="{OnIdiom Desktop=2, Phone=0}" Grid.Row="{OnIdiom Desktop=0, Phone=2}"
+                                   Text="{Binding NewTaskMinutes}" Placeholder="分钟" Keyboard="Numeric" />
+                            <Button Grid.Column="{OnIdiom Desktop=3, Phone=0}" Grid.Row="{OnIdiom Desktop=0, Phone=3}"
+                                    Text="加入今天" Command="{Binding AddTaskCommand}" HorizontalOptions="End" />
+                        </Grid>
+                        <Label Text="{Binding TaskMessage}" Style="{StaticResource Muted}" />
+                    </VerticalStackLayout>
+                </Border>
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding TodayTasks}" Spacing="10">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
