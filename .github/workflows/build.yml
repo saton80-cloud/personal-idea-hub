@@ -39,7 +39,7 @@ jobs:
       - name: Install MAUI Windows workload
         run: dotnet workload install maui-windows
       - name: Publish Windows desktop
-        run: dotnet publish src/PersonalWorkBoard.Client/PersonalWorkBoard.Client.csproj -f net10.0-windows10.0.19041.0 -c Release -p:TargetFrameworks=net10.0-windows10.0.19041.0 -p:RuntimeIdentifierOverride=win-x64 -p:WindowsPackageType=None -o artifacts/windows-x64
+        run: dotnet publish src/PersonalWorkBoard.Client/PersonalWorkBoard.Client.csproj -f net10.0-windows10.0.19041.0 -c Release -p:ClientTargetFramework=net10.0-windows10.0.19041.0 -p:RuntimeIdentifierOverride=win-x64 -p:WindowsPackageType=None -o artifacts/windows-x64
       - uses: actions/upload-artifact@v4
         with:
           name: personal-work-board-windows-x64
@@ -56,7 +56,7 @@ jobs:
       - name: Install MAUI Android workload
         run: dotnet workload install maui-android
       - name: Build Android APK
-        run: dotnet publish src/PersonalWorkBoard.Client/PersonalWorkBoard.Client.csproj -f net10.0-android -c Release -p:TargetFrameworks=net10.0-android -p:AndroidPackageFormats=apk -o artifacts/android
+        run: dotnet publish src/PersonalWorkBoard.Client/PersonalWorkBoard.Client.csproj -f net10.0-android -c Release -p:ClientTargetFramework=net10.0-android -p:AndroidPackageFormats=apk -o artifacts/android
       - uses: actions/upload-artifact@v4
         with:
           name: personal-work-board-android-apk
