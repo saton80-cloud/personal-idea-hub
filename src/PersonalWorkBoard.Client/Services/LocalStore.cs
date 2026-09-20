@@ -76,6 +76,12 @@ public sealed class LocalStore
         return await _database.Table<LocalSyncConflict>().CountAsync();
     }
 
+    public async Task ClearConflictsAsync()
+    {
+        await InitializeAsync();
+        await _database.DeleteAllAsync<LocalSyncConflict>();
+    }
+
     public async Task<string?> GetStateAsync(string key)
     {
         await InitializeAsync();

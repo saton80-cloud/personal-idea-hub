@@ -48,7 +48,9 @@ public sealed class SyncViewModel(ApiClient api, SyncService sync, LocalStore st
         {
             var result = await sync.SyncNowAsync();
             ConflictCount = await store.GetConflictCountAsync();
-            Status = $"同步完成：上传 {result.Uploaded}，下载 {result.Downloaded}，冲突 {result.Conflicts}";
+            Status = result.Conflicts == 0
+                ? $"同步完成：上传 {result.Uploaded}，下载 {result.Downloaded}；同记录按最新更新时间自动合并"
+                : $"同步完成：上传 {result.Uploaded}，下载 {result.Downloaded}，异常 {result.Conflicts}";
         }
         catch (Exception ex) { Status = $"同步失败：{ex.Message}"; }
         finally { IsBusy = false; }

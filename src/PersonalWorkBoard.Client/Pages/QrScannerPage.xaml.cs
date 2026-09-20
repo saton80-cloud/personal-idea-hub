@@ -6,12 +6,14 @@ namespace PersonalWorkBoard.Client.Pages;
 public partial class QrScannerPage : ContentPage
 {
     private readonly ApiClient _api;
+    private readonly SyncService _sync;
     private int _processing;
 
-    public QrScannerPage(ApiClient api)
+    public QrScannerPage(ApiClient api, SyncService sync)
     {
         InitializeComponent();
         _api = api;
+        _sync = sync;
         CameraView.Options = new BarcodeReaderOptions { Formats = BarcodeFormats.TwoDimensional, AutoRotate = true, Multiple = false };
     }
 
@@ -33,6 +35,8 @@ public partial class QrScannerPage : ContentPage
                 CameraView.IsDetecting = false;
                 StatusLabel.Text = "正在安全配对并同步数据…";
                 await _api.RedeemPairingAsync(value);
+                try { await _sync.SyncNowAsync(); }
+                catch { /* Pairing succeeded; the workspace will keep the local queue and retry. */ }
                 ((App)Application.Current!).ShowWorkspace();
             }
             catch (Exception ex)

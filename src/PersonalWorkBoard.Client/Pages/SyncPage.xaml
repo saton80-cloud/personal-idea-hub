@@ -13,7 +13,7 @@
                     <VerticalStackLayout Spacing="14">
                         <Label Text="当前连接" Style="{StaticResource SectionTitle}" />
                         <Border BackgroundColor="{StaticResource Navy}" StrokeThickness="0" Padding="18"><Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape><VerticalStackLayout Spacing="5"><Label Text="局域网服务器" TextColor="#9BB6D8" FontSize="12" /><Label Text="{Binding ServerUrl}" TextColor="White" FontSize="17" FontAttributes="Bold" LineBreakMode="CharacterWrap" /></VerticalStackLayout></Border>
-                        <Grid ColumnDefinitions="*,Auto"><Label Text="未解决冲突" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="{Binding ConflictCount}" TextColor="{StaticResource Danger}" FontAttributes="Bold" /></Grid>
+                        <Grid ColumnDefinitions="*,Auto"><Label Text="同步异常" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="{Binding ConflictCount}" TextColor="{StaticResource Danger}" FontAttributes="Bold" /></Grid>
                         <Button Text="立即双向同步" Command="{Binding SyncNowCommand}" />
                         <Label Text="{Binding Status}" Style="{StaticResource Muted}" LineBreakMode="WordWrap" />
                     </VerticalStackLayout>

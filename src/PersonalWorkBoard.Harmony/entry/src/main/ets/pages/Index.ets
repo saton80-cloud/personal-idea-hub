@@ -77,6 +77,7 @@ struct Index {
   private readonly storage: StorageService = StorageService.getInstance();
   private readonly api: ApiClient = ApiClient.getInstance();
   private readonly syncService: SyncService = SyncService.getInstance();
+  private syncTimer: number = -1;
 
   @State private ready: boolean = false;
   @State private busy: boolean = false;
@@ -105,6 +106,20 @@ struct Index {
 
   aboutToAppear(): void {
     this.initialize();
+    if (this.syncTimer < 0) {
+      this.syncTimer = setInterval(() => {
+        if (this.session !== null && !this.busy) {
+          this.synchronize(false);
+        }
+      }, 60000);
+    }
+  }
+
+  aboutToDisappear(): void {
+    if (this.syncTimer >= 0) {
+      clearInterval(this.syncTimer);
+      this.syncTimer = -1;
+    }
   }
 
   private async initialize(): Promise<void> {
@@ -175,6 +190,7 @@ struct Index {
       await this.storage.saveServerHint(normalized);
       this.session = session;
       this.password = '';
+      this.busy = false;
       await this.synchronize(false);
     } catch (error) {
       this.showError(error);
@@ -249,6 +265,7 @@ struct Index {
       this.serverUrl = pairing.serverUrl;
       this.session = session;
       this.pairPayload = '';
+      this.busy = false;
       await this.synchronize(false);
     } catch (error) {
       this.showError(error);
@@ -270,7 +287,7 @@ struct Index {
       this.updateReminderMessage();
       this.syncMessage = `已上传 ${summary.pushed} 条，下载 ${summary.pulled} 条`;
       if (summary.conflicts > 0) {
-        this.syncMessage += `，发现 ${summary.conflicts} 个冲突`;
+        this.syncMessage += `，发现 ${summary.conflicts} 条同步异常`;
       }
       if (showToast) {
         promptAction.showToast({ message: '同步完成' });
@@ -887,13 +904,13 @@ struct Index {
             Column() {
               Text(`${this.conflicts.length}`).fontSize(24).fontWeight(FontWeight.Bold)
                 .fontColor(this.conflicts.length > 0 ? RED : TEXT_SECONDARY)
-              Text('冲突').fontSize(12).fontColor(TEXT_SECONDARY).margin({ top: 3 })
+              Text('异常').fontSize(12).fontColor(TEXT_SECONDARY).margin({ top: 3 })
             }.layoutWeight(1)
           }
           .width('100%').padding(18).backgroundColor(CARD_BACKGROUND).borderRadius(18).margin({ top: 12 })
 
           if (this.conflicts.length > 0) {
-            Text('待处理冲突').width('100%').fontSize(18).fontWeight(FontWeight.Bold).fontColor(TEXT_PRIMARY)
+            Text('待处理同步异常').width('100%').fontSize(18).fontWeight(FontWeight.Bold).fontColor(TEXT_PRIMARY)
               .margin({ top: 22, bottom: 10 })
             ForEach(this.conflicts, (conflict: SyncConflict) => {
               Column() {
@@ -909,7 +926,7 @@ struct Index {
 
           Column() {
             Text('同步规则').width('100%').fontSize(16).fontWeight(FontWeight.Bold).fontColor(TEXT_PRIMARY)
-            Text('• 手机离线时先保存到应用私有空间\n• 回到同一局域网后手动或启动时同步\n• 同一条记录被两端修改时保留冲突，不静默覆盖')
+            Text('• 手机离线时先保存到应用私有空间\n• 扫码、启动、回到前台或前台定时同步\n• 同一条记录被多端修改时，以 updatedAt 较新的版本为准')
               .width('100%').fontSize(13).fontColor(TEXT_SECONDARY).lineHeight(22).margin({ top: 10 })
           }
           .width('100%').padding(17).backgroundColor(CARD_BACKGROUND).borderRadius(18).margin({ top: 12, bottom: 24 })

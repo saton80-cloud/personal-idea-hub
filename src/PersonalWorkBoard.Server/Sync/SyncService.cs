@@ -91,12 +91,14 @@ public sealed class SyncService(DbConnectionFactory connections)
             """,
             new { Id = mutation.EntityId, OwnerId = principal.UserId }, transaction, cancellationToken: cancellationToken));
 
-        if (current is not null && current.RowVersion != mutation.BaseRowVersion)
-            return Conflict(mutation, current.RowVersion, JsonSerializer.Serialize(current, JsonOptions), "服务器记录已被另一设备更新");
-        if (current is null && mutation.BaseRowVersion != 0)
-            return Conflict(mutation, 0, "{}", "服务器记录不存在，不能按旧版本更新");
+        if (current is not null && !LastWriteWinsPolicy.IncomingWins(incoming.UpdatedAt, current.UpdatedAt))
+        {
+            await AddFeedAsync(connection, transaction, principal, mutation, current.RowVersion,
+                JsonSerializer.Serialize(current, JsonOptions),
+                current.DeletedAt is null ? SyncOperation.Upsert : SyncOperation.Delete, cancellationToken);
+            return null;
+        }
 
-        var now = DateTimeOffset.UtcNow;
         var nextVersion = current is null ? 1 : current.RowVersion + 1;
         var normalized = incoming with
         {
@@ -104,9 +106,9 @@ public sealed class SyncService(DbConnectionFactory connections)
             Progress = Math.Clamp(incoming.Progress, 0, 100),
             Title = incoming.Title.Trim()[..Math.Min(200, incoming.Title.Trim().Length)],
             RowVersion = nextVersion,
-            CreatedAt = current?.CreatedAt ?? now,
-            UpdatedAt = now,
-            DeletedAt = mutation.Operation == SyncOperation.Delete ? now : incoming.DeletedAt
+            CreatedAt = current?.CreatedAt ?? incoming.CreatedAt,
+            UpdatedAt = incoming.UpdatedAt.ToUniversalTime(),
+            DeletedAt = mutation.Operation == SyncOperation.Delete ? incoming.UpdatedAt.ToUniversalTime() : incoming.DeletedAt
         };
 
         await connection.ExecuteAsync(new CommandDefinition(
@@ -142,7 +144,8 @@ public sealed class SyncService(DbConnectionFactory connections)
                 UpdatedAt = normalized.UpdatedAt.UtcDateTime,
                 DeletedAt = normalized.DeletedAt?.UtcDateTime
             }, transaction, cancellationToken: cancellationToken));
-        await AddFeedAsync(connection, transaction, principal, mutation, nextVersion, JsonSerializer.Serialize(normalized, JsonOptions), cancellationToken);
+        await AddFeedAsync(connection, transaction, principal, mutation, nextVersion,
+            JsonSerializer.Serialize(normalized, JsonOptions), mutation.Operation, cancellationToken);
         return null;
     }
 
@@ -162,12 +165,14 @@ public sealed class SyncService(DbConnectionFactory connections)
             FROM work_tasks WHERE id = @Id AND owner_id = @OwnerId FOR UPDATE
             """,
             new { Id = mutation.EntityId, OwnerId = principal.UserId }, transaction, cancellationToken: cancellationToken));
-        if (current is not null && current.RowVersion != mutation.BaseRowVersion)
-            return Conflict(mutation, current.RowVersion, JsonSerializer.Serialize(current, JsonOptions), "服务器任务已被另一设备更新");
-        if (current is null && mutation.BaseRowVersion != 0)
-            return Conflict(mutation, 0, "{}", "服务器任务不存在");
+        if (current is not null && !LastWriteWinsPolicy.IncomingWins(incoming.UpdatedAt, current.UpdatedAt))
+        {
+            await AddFeedAsync(connection, transaction, principal, mutation, current.RowVersion,
+                JsonSerializer.Serialize(current, JsonOptions),
+                current.DeletedAt is null ? SyncOperation.Upsert : SyncOperation.Delete, cancellationToken);
+            return null;
+        }
 
-        var now = DateTimeOffset.UtcNow;
         var nextVersion = current is null ? 1 : current.RowVersion + 1;
         var normalized = incoming with
         {
@@ -175,9 +180,9 @@ public sealed class SyncService(DbConnectionFactory connections)
             Progress = Math.Clamp(incoming.Progress, 0, 100),
             Title = incoming.Title.Trim()[..Math.Min(200, incoming.Title.Trim().Length)],
             RowVersion = nextVersion,
-            CreatedAt = current?.CreatedAt ?? now,
-            UpdatedAt = now,
-            DeletedAt = mutation.Operation == SyncOperation.Delete ? now : incoming.DeletedAt
+            CreatedAt = current?.CreatedAt ?? incoming.CreatedAt,
+            UpdatedAt = incoming.UpdatedAt.ToUniversalTime(),
+            DeletedAt = mutation.Operation == SyncOperation.Delete ? incoming.UpdatedAt.ToUniversalTime() : incoming.DeletedAt
         };
         await connection.ExecuteAsync(new CommandDefinition(
             """
@@ -214,7 +219,8 @@ public sealed class SyncService(DbConnectionFactory connections)
                 UpdatedAt = normalized.UpdatedAt.UtcDateTime,
                 DeletedAt = normalized.DeletedAt?.UtcDateTime
             }, transaction, cancellationToken: cancellationToken));
-        await AddFeedAsync(connection, transaction, principal, mutation, nextVersion, JsonSerializer.Serialize(normalized, JsonOptions), cancellationToken);
+        await AddFeedAsync(connection, transaction, principal, mutation, nextVersion,
+            JsonSerializer.Serialize(normalized, JsonOptions), mutation.Operation, cancellationToken);
         return null;
     }
 
@@ -223,7 +229,9 @@ public sealed class SyncService(DbConnectionFactory connections)
             "SELECT EXISTS(SELECT 1 FROM change_feed WHERE owner_id = @OwnerId AND mutation_id = @MutationId)",
             new { OwnerId = ownerId, MutationId = mutationId }, transaction, cancellationToken: cancellationToken));
 
-    private static Task AddFeedAsync(IDbConnection connection, IDbTransaction transaction, AuthPrincipal principal, PendingMutation mutation, long rowVersion, string payload, CancellationToken cancellationToken) =>
+    private static Task AddFeedAsync(IDbConnection connection, IDbTransaction transaction, AuthPrincipal principal,
+        PendingMutation mutation, long rowVersion, string payload, SyncOperation operation,
+        CancellationToken cancellationToken) =>
         connection.ExecuteAsync(new CommandDefinition(
             """
             INSERT INTO change_feed
@@ -231,7 +239,7 @@ public sealed class SyncService(DbConnectionFactory connections)
             VALUES
               (@ChangeId, @OwnerId, @DeviceId, @MutationId, @EntityType, @EntityId, @Operation, @RowVersion, @Payload, @Now)
             """,
-            new { ChangeId = Guid.NewGuid(), OwnerId = principal.UserId, DeviceId = principal.DeviceId, mutation.MutationId, mutation.EntityType, mutation.EntityId, Operation = mutation.Operation.ToString(), RowVersion = rowVersion, Payload = payload, Now = DateTime.UtcNow },
+            new { ChangeId = Guid.NewGuid(), OwnerId = principal.UserId, DeviceId = principal.DeviceId, mutation.MutationId, mutation.EntityType, mutation.EntityId, Operation = operation.ToString(), RowVersion = rowVersion, Payload = payload, Now = DateTime.UtcNow },
             transaction, cancellationToken: cancellationToken));
 
     private static Task StoreConflictAsync(IDbConnection connection, IDbTransaction transaction, AuthPrincipal principal, PendingMutation mutation, SyncConflict conflict, CancellationToken cancellationToken) =>
@@ -247,6 +255,4 @@ public sealed class SyncService(DbConnectionFactory connections)
             new { Id = Guid.NewGuid(), OwnerId = principal.UserId, DeviceId = principal.DeviceId, mutation.MutationId, mutation.EntityType, mutation.EntityId, ClientVersion = mutation.BaseRowVersion, conflict.ServerVersion, ClientPayload = mutation.PayloadJson, ServerPayload = conflict.ServerPayloadJson, conflict.Reason, Now = DateTime.UtcNow },
             transaction, cancellationToken: cancellationToken));
 
-    private static SyncConflict Conflict(PendingMutation mutation, long serverVersion, string serverPayload, string reason) =>
-        new(mutation.MutationId, mutation.EntityType, mutation.EntityId, mutation.BaseRowVersion, serverVersion, serverPayload, reason);
 }

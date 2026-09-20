@@ -25,6 +25,8 @@ node scripts/validate-harmony-project.mjs
 
 HAP必须在安装HarmonyOS SDK的DevEco Studio中编译，并使用开发者账号的调试或发布签名。源码检查不能代替ArkTS编译和真机验收。
 
+同步实现必须保持以下顺序：本地写入与排队 → 推送待同步变更 → 服务端按`updatedAt`执行Last Write Wins → 客户端按`sequence`拉取最终状态。不要把拉取放到推送之前，否则服务器旧值可能覆盖尚未上传的离线修改。
+
 ## GitHub Actions产物
 
 - `personal-work-board-server-linux-x64`

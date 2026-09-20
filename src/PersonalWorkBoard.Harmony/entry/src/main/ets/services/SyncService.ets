@@ -114,6 +114,7 @@ export class SyncService {
     });
     await this.storage.saveItems(items);
     await this.storage.saveTasks(tasks);
+    await this.storage.saveConflicts(recentConflicts);
     await this.storage.saveSequence(pullResult.latestSequence);
     await this.storage.saveLastSyncAt(new Date().toLocaleString());
     return {

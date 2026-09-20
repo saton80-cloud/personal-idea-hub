@@ -4,10 +4,12 @@
 
 - 新增面向HarmonyOS 7.0.0.107的原生ArkTS/ArkUI Stage客户端
 - 新增鸿蒙端登录、PC二维码扫码/粘贴配对与独立设备令牌
-- 新增今日工作、项目看板、子创意、进度推进和冲突提示界面
+- 新增今日工作、项目看板、子创意、进度推进和同步状态界面
 - 新增应用私有离线缓存、待同步队列与WorkItem/WorkTask双向增量同步
 - 新增HarmonyOS源码/API接线验证脚本和GitHub Actions检查任务
 - 新增DevEco Studio签名、HAP构建、真机安装和验收文档
+- Android与HarmonyOS支持离线本地保存，扫码、恢复网络或回到前台后同步最新数据
+- 同一记录的多端修改改为按`updatedAt`执行Last Write Wins，最新修改自动生效
 
 ## V0.2.0 - 2026-09-20
 

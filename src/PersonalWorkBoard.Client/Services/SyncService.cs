@@ -47,6 +47,7 @@ public sealed class SyncService(LocalStore store, ApiClient api)
                         Reason = conflict.Reason
                     });
                 }
+                if (pushed.Conflicts.Count == 0) await store.ClearConflictsAsync();
             }
 
             var since = long.TryParse(await store.GetStateAsync("last_sequence"), out var sequence) ? sequence : 0;
@@ -62,6 +63,7 @@ public sealed class SyncService(LocalStore store, ApiClient api)
                 if (pulled.Changes.Count < 500) break;
             }
             await store.SetStateAsync("last_sync_at", DateTimeOffset.UtcNow.ToString("O"));
+            if (conflicts == 0) await store.ClearConflictsAsync();
             return new SyncSummary(uploaded, downloaded, conflicts, DateTimeOffset.Now);
         }
         finally

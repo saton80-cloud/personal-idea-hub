@@ -18,7 +18,7 @@
                 </VerticalStackLayout>
             </Border>
             <Border Style="{StaticResource Card}">
-                <VerticalStackLayout Spacing="12"><Label Text="版本信息" Style="{StaticResource SectionTitle}" /><Grid ColumnDefinitions="*,Auto"><Label Text="客户端版本" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="V0.2.0" FontAttributes="Bold" /></Grid><Grid ColumnDefinitions="*,Auto"><Label Text="同步协议" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="API v1" FontAttributes="Bold" /></Grid></VerticalStackLayout>
+                <VerticalStackLayout Spacing="12"><Label Text="版本信息" Style="{StaticResource SectionTitle}" /><Grid ColumnDefinitions="*,Auto"><Label Text="客户端版本" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="V0.3.0" FontAttributes="Bold" /></Grid><Grid ColumnDefinitions="*,Auto"><Label Text="同步协议" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="API v1 · 最新时间优先" FontAttributes="Bold" /></Grid></VerticalStackLayout>
             </Border>
             <Button Text="退出当前设备" Style="{StaticResource SecondaryButton}" Clicked="OnLogoutClicked" />
             <Label x:Name="MessageLabel" Style="{StaticResource Muted}" HorizontalTextAlignment="Center" />
