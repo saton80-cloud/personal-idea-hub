@@ -19,7 +19,7 @@ public partial class StartupPage : ContentPage
         if (_started) return;
         _started = true;
         await Task.Delay(250);
-        if (await _api.HasSessionAsync()) ((App)Application.Current!).ShowWorkspace();
+        if (await _api.CanEnterWorkspaceAsync()) ((App)Application.Current!).ShowWorkspace();
         else ((App)Application.Current!).ShowLogin();
     }
 }

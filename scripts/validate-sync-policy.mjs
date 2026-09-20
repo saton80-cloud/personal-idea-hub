@@ -6,6 +6,9 @@ const files = {
   server: readFileSync(join(root, 'src/PersonalWorkBoard.Server/Sync/SyncService.cs'), 'utf8'),
   policy: readFileSync(join(root, 'src/PersonalWorkBoard.Domain/Sync/LastWriteWinsPolicy.cs'), 'utf8'),
   app: readFileSync(join(root, 'src/PersonalWorkBoard.Client/App.xaml.cs'), 'utf8'),
+  api: readFileSync(join(root, 'src/PersonalWorkBoard.Client/Services/ApiClient.cs'), 'utf8'),
+  login: readFileSync(join(root, 'src/PersonalWorkBoard.Client/Pages/LoginPage.xaml'), 'utf8'),
+  startup: readFileSync(join(root, 'src/PersonalWorkBoard.Client/Pages/StartupPage.xaml.cs'), 'utf8'),
   scanner: readFileSync(join(root, 'src/PersonalWorkBoard.Client/Pages/QrScannerPage.xaml.cs'), 'utf8'),
   harmony: readFileSync(join(root, 'src/PersonalWorkBoard.Harmony/entry/src/main/ets/pages/Index.ets'), 'utf8')
 };
@@ -17,6 +20,9 @@ const checks = [
   [files.app, 'Connectivity.ConnectivityChanged += OnConnectivityChanged', 'MAUI客户端未监听网络恢复'],
   [files.app, 'window.Resumed +=', 'MAUI客户端未在回到前台时同步'],
   [files.scanner, 'await _sync.SyncNowAsync()', 'Android扫码后未立即同步'],
+  [files.api, 'EnableOfflineModeAsync', 'Android缺少首次离线模式状态'],
+  [files.startup, 'CanEnterWorkspaceAsync()', 'Android重启后不能恢复离线工作台'],
+  [files.login, '暂不连接服务器，离线进入', 'Android登录页缺少首次离线入口'],
   [files.harmony, 'await this.synchronize(false)', 'HarmonyOS扫码/启动后未立即同步'],
   [files.harmony, 'setInterval(', 'HarmonyOS前台未定时重试同步']
 ];

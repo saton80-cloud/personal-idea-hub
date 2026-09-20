@@ -14,14 +14,14 @@
                         <Label Text="当前连接" Style="{StaticResource SectionTitle}" />
                         <Border BackgroundColor="{StaticResource Navy}" StrokeThickness="0" Padding="18"><Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape><VerticalStackLayout Spacing="5"><Label Text="局域网服务器" TextColor="#9BB6D8" FontSize="12" /><Label Text="{Binding ServerUrl}" TextColor="White" FontSize="17" FontAttributes="Bold" LineBreakMode="CharacterWrap" /></VerticalStackLayout></Border>
                         <Grid ColumnDefinitions="*,Auto"><Label Text="同步异常" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="{Binding ConflictCount}" TextColor="{StaticResource Danger}" FontAttributes="Bold" /></Grid>
-                        <Button Text="立即双向同步" Command="{Binding SyncNowCommand}" />
+                        <Button Text="立即双向同步" Command="{Binding SyncNowCommand}" IsEnabled="{Binding HasSession}" />
                         <Label Text="{Binding Status}" Style="{StaticResource Muted}" LineBreakMode="WordWrap" />
                     </VerticalStackLayout>
                 </Border>
                 <Border Grid.Column="{OnIdiom Desktop=1, Phone=0}" Grid.Row="{OnIdiom Desktop=0, Phone=1}" Style="{StaticResource Card}">
                     <VerticalStackLayout Spacing="14">
                         <Label Text="连接Android手机" Style="{StaticResource SectionTitle}" />
-                        <Label Text="PC端生成一次性二维码，手机扫描后会自动连接同一服务器并下载最新数据。" Style="{StaticResource Muted}" />
+                        <Label Text="离线使用不需要服务器；需要汇总数据时，由PC生成一次性二维码，手机扫描后先上传本地记录，再下载最新状态。" Style="{StaticResource Muted}" />
                         <Button Text="生成5分钟配对二维码" Command="{Binding GenerateQrCommand}" IsVisible="{Binding IsWindows}" />
                         <Button Text="扫描PC端二维码" Clicked="OnScanClicked" IsVisible="{Binding IsAndroid}" />
                         <Border IsVisible="{Binding IsWindows}" BackgroundColor="White" Stroke="{StaticResource Border}" Padding="14" HorizontalOptions="Center">

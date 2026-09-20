@@ -9,10 +9,20 @@ public sealed class ApiClient
     private const string ServerKey = "server_url";
     private const string TokenKey = "access_token";
     private const string DeviceKey = "device_id";
+    private const string OfflineModeKey = "offline_mode_enabled";
 
     public async Task<bool> HasSessionAsync() =>
         !string.IsNullOrWhiteSpace(await SecureStorage.Default.GetAsync(ServerKey)) &&
         !string.IsNullOrWhiteSpace(await SecureStorage.Default.GetAsync(TokenKey));
+
+    public async Task<bool> CanEnterWorkspaceAsync() =>
+        await HasSessionAsync() || Preferences.Default.Get(OfflineModeKey, false);
+
+    public Task EnableOfflineModeAsync()
+    {
+        Preferences.Default.Set(OfflineModeKey, true);
+        return Task.CompletedTask;
+    }
 
     public async Task LoginAsync(string serverUrl, string userName, string password)
     {
@@ -96,6 +106,7 @@ public sealed class ApiClient
         await SecureStorage.Default.SetAsync(ServerKey, serverUrl.Trim().TrimEnd('/'));
         await SecureStorage.Default.SetAsync(TokenKey, token);
         await SecureStorage.Default.SetAsync(DeviceKey, deviceId.ToString());
+        Preferences.Default.Set(OfflineModeKey, true);
     }
 
     private static Dictionary<string, string> ParseQuery(string query) => query.TrimStart('?')

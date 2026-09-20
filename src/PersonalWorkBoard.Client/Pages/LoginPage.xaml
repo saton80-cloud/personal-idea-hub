@@ -31,6 +31,8 @@
                 <Entry Text="{Binding Password}" IsPassword="True" Placeholder="服务器管理员密码" />
                 <Button Text="登录并进入工作台" Command="{Binding LoginCommand}" Margin="0,8,0,0" />
                 <Button Text="扫描PC端二维码配对" Style="{StaticResource SecondaryButton}" Clicked="OnScanClicked" IsVisible="{OnPlatform Android=True, WinUI=False}" />
+                <Button Text="暂不连接服务器，离线进入" Style="{StaticResource SecondaryButton}" Clicked="OnOfflineClicked" IsVisible="{OnPlatform Android=True, WinUI=False}" />
+                <Label Text="离线进入后可正常记录项目、任务和进度；以后在同步中心扫码连接服务器，手机数据不会丢失。" Style="{StaticResource Muted}" IsVisible="{OnPlatform Android=True, WinUI=False}" />
                 <Border Style="{StaticResource Card}" Margin="0,10,0,0">
                     <Label Text="{Binding Message}" Style="{StaticResource Muted}" LineBreakMode="WordWrap" />
                 </Border>

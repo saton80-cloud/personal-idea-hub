@@ -10,12 +10,14 @@ public sealed class SyncViewModel(ApiClient api, SyncService sync, LocalStore st
     private string _status = "PC和手机必须与服务器处于同一局域网。 ";
     private string _serverUrl = string.Empty;
     private int _conflictCount;
+    private bool _hasSession;
     private bool _isBusy;
 
     public string QrPayload { get => _qrPayload; private set => SetProperty(ref _qrPayload, value); }
     public string Status { get => _status; private set => SetProperty(ref _status, value); }
     public string ServerUrl { get => _serverUrl; private set => SetProperty(ref _serverUrl, value); }
     public int ConflictCount { get => _conflictCount; private set => SetProperty(ref _conflictCount, value); }
+    public bool HasSession { get => _hasSession; private set => SetProperty(ref _hasSession, value); }
     public bool IsBusy { get => _isBusy; private set => SetProperty(ref _isBusy, value); }
     public bool IsWindows => DeviceInfo.Platform == DevicePlatform.WinUI;
     public bool IsAndroid => DeviceInfo.Platform == DevicePlatform.Android;
@@ -25,6 +27,12 @@ public sealed class SyncViewModel(ApiClient api, SyncService sync, LocalStore st
     public async Task LoadAsync()
     {
         ServerUrl = await api.GetServerUrlAsync();
+        HasSession = await api.HasSessionAsync();
+        if (!HasSession)
+        {
+            ServerUrl = "未连接服务器（本机离线模式）";
+            Status = "可以继续离线记录；需要同步时扫描PC端二维码。";
+        }
         ConflictCount = await store.GetConflictCountAsync();
     }
 
@@ -43,6 +51,11 @@ public sealed class SyncViewModel(ApiClient api, SyncService sync, LocalStore st
 
     private async Task SyncNowAsync()
     {
+        if (!await api.HasSessionAsync())
+        {
+            Status = "当前为本机离线模式，请先扫描PC端二维码连接服务器。";
+            return;
+        }
         IsBusy = true;
         try
         {
