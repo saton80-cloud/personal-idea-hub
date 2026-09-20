@@ -66,8 +66,24 @@ jobs:
         run: dotnet workload install maui-android
       - name: Build Android APK
         run: dotnet publish src/PersonalWorkBoard.Client/PersonalWorkBoard.Client.csproj -f net10.0-android -c Release -p:ClientTargetFramework=net10.0-android -p:AndroidPackageFormats=apk -o artifacts/android
+      - name: Export Android APK signing verifier
+        shell: pwsh
+        run: |
+          $buildTools = Get-ChildItem "$env:ANDROID_HOME\build-tools" -Directory |
+            Sort-Object { [version]$_.Name } -Descending |
+            Select-Object -First 1
+          if (-not $buildTools) {
+            throw "Android build-tools were not found."
+          }
+          New-Item -ItemType Directory -Force artifacts/android-signing-tools | Out-Null
+          Copy-Item "$($buildTools.FullName)\lib\apksigner.jar" artifacts/android-signing-tools/apksigner.jar
       - uses: actions/upload-artifact@v4
         with:
           name: personal-work-board-android-apk
           path: artifacts/android/**/*.apk
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-apk-signing-tools
+          path: artifacts/android-signing-tools/apksigner.jar
           if-no-files-found: error
