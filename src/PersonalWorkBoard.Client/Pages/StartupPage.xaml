@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage x:Class="PersonalWorkBoard.Client.Pages.StartupPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             NavigationPage.HasNavigationBar="False">
+    <Grid BackgroundColor="#0B1F3A">
+        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="18">
+            <Border WidthRequest="78" HeightRequest="78" BackgroundColor="#2274F0" StrokeThickness="0">
+                <Border.StrokeShape><RoundRectangle CornerRadius="24" /></Border.StrokeShape>
+                <Label Text="✓" FontSize="38" TextColor="White" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+            </Border>
+            <Label Text="个人工作看板" TextColor="White" FontSize="25" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+            <ActivityIndicator IsRunning="True" Color="#6ACDE0" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

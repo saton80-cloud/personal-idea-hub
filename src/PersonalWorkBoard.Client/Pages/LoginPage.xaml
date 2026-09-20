@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage x:Class="PersonalWorkBoard.Client.Pages.LoginPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             NavigationPage.HasNavigationBar="False">
+    <Grid ColumnDefinitions="1.05*,1.2*">
+        <Grid Grid.ColumnSpan="2" BackgroundColor="{StaticResource Canvas}" />
+        <Grid Grid.Column="0" BackgroundColor="{StaticResource Navy}" Padding="50" IsVisible="{OnIdiom Desktop=True, Phone=False}">
+            <VerticalStackLayout VerticalOptions="Center" Spacing="18">
+                <Border WidthRequest="64" HeightRequest="64" HorizontalOptions="Start" BackgroundColor="{StaticResource Primary}" StrokeThickness="0">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="20" /></Border.StrokeShape>
+                    <Label Text="✓" FontSize="32" TextColor="White" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                </Border>
+                <Label Text="个人工作看板" TextColor="White" FontSize="32" FontAttributes="Bold" />
+                <Label Text="工作、项目、创意和每日计划，&#10;在PC与手机之间保持最新。" TextColor="#AFC7E6" FontSize="17" LineHeight="1.45" />
+                <Border Margin="0,20,0,0" Padding="18" BackgroundColor="#17365F" Stroke="#2E527C">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                    <Label Text="局域网部署 · MySQL集中存储 · 离线可用 · 二维码安全配对" TextColor="#D8E8FA" FontSize="13" />
+                </Border>
+            </VerticalStackLayout>
+        </Grid>
+        <ScrollView Grid.Column="1" Grid.ColumnSpan="{OnIdiom Desktop=1, Phone=2}" Padding="{OnIdiom Desktop='70,40', Phone='24,32'}">
+            <VerticalStackLayout MaximumWidthRequest="520" HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
+                <Label Text="连接工作服务器" Style="{StaticResource PageTitle}" />
+                <Label Text="PC使用账号登录；Android手机可直接扫描PC端生成的二维码。" Style="{StaticResource Muted}" />
+                <Label Text="服务器地址" FontAttributes="Bold" Margin="0,14,0,0" />
+                <Entry Text="{Binding ServerUrl}" Placeholder="例如 http://192.168.1.100:5088" Keyboard="Url" />
+                <Label Text="用户名" FontAttributes="Bold" />
+                <Entry Text="{Binding UserName}" Placeholder="admin" />
+                <Label Text="密码" FontAttributes="Bold" />
+                <Entry Text="{Binding Password}" IsPassword="True" Placeholder="服务器管理员密码" />
+                <Button Text="登录并进入工作台" Command="{Binding LoginCommand}" Margin="0,8,0,0" />
+                <Button Text="扫描PC端二维码配对" Style="{StaticResource SecondaryButton}" Clicked="OnScanClicked" IsVisible="{OnPlatform Android=True, WinUI=False}" />
+                <Border Style="{StaticResource Card}" Margin="0,10,0,0">
+                    <Label Text="{Binding Message}" Style="{StaticResource Muted}" LineBreakMode="WordWrap" />
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

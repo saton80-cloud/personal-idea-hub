@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="src/PersonalWorkBoard.Domain/PersonalWorkBoard.Domain.csproj" />
+  <Project Path="src/PersonalWorkBoard.Contracts/PersonalWorkBoard.Contracts.csproj" />
+  <Project Path="src/PersonalWorkBoard.Server/PersonalWorkBoard.Server.csproj" />
+  <Project Path="src/PersonalWorkBoard.Client/PersonalWorkBoard.Client.csproj" />
+  <Project Path="tests/PersonalWorkBoard.Domain.Tests/PersonalWorkBoard.Domain.Tests.csproj" />
+</Solution>

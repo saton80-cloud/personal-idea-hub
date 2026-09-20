@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage x:Class="PersonalWorkBoard.Client.Pages.DashboardPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="今日工作">
+    <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy, Mode=OneWay}">
+        <ScrollView>
+            <VerticalStackLayout Padding="{OnIdiom Desktop='34,28', Phone='18,20'}" Spacing="22" MaximumWidthRequest="1280" HorizontalOptions="Center">
+                <Grid ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="今日工作" Style="{StaticResource PageTitle}" />
+                        <Label Text="先完成最重要的一件事，再处理其它工作。" Style="{StaticResource Muted}" />
+                    </VerticalStackLayout>
+                    <Button Grid.Column="1" Text="立即同步" Style="{StaticResource SecondaryButton}" Command="{Binding RefreshCommand}" />
+                </Grid>
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="14">
+                    <Border Grid.Column="0" Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="7"><Label Text="{Binding ActiveProjects}" FontSize="30" FontAttributes="Bold" TextColor="{StaticResource Primary}" /><Label Text="活跃项目" Style="{StaticResource Muted}" /></VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="7"><Label Text="{Binding CompletedToday}" FontSize="30" FontAttributes="Bold" TextColor="{StaticResource Success}" /><Label Text="今日完成" Style="{StaticResource Muted}" /></VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="7"><Label Text="{Binding WaitingItems}" FontSize="30" FontAttributes="Bold" TextColor="{StaticResource Warning}" /><Label Text="等待处理" Style="{StaticResource Muted}" /></VerticalStackLayout>
+                    </Border>
+                </Grid>
+                <Border BackgroundColor="{StaticResource Navy}" StrokeThickness="0" Padding="20">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18" /></Border.StrokeShape>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                        <Border WidthRequest="38" HeightRequest="38" BackgroundColor="#2274F0" StrokeThickness="0"><Border.StrokeShape><RoundRectangle CornerRadius="12" /></Border.StrokeShape><Label Text="↻" TextColor="White" FontSize="22" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="3"><Label Text="设备同步状态" TextColor="White" FontAttributes="Bold" /><Label Text="{Binding SyncStatus}" TextColor="#AFC7E6" FontSize="12" /></VerticalStackLayout>
+                    </Grid>
+                </Border>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="今天要做" Style="{StaticResource SectionTitle}" />
+                    <Label Grid.Column="1" Text="上午计划 09:00 · 晚间复盘 20:30" Style="{StaticResource Muted}" />
+                </Grid>
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding TodayTasks}" Spacing="10">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource Card}">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                                    <Border WidthRequest="42" HeightRequest="42" BackgroundColor="{StaticResource PrimarySoft}" StrokeThickness="0"><Border.StrokeShape><RoundRectangle CornerRadius="13" /></Border.StrokeShape><Label Text="✓" TextColor="{StaticResource Primary}" FontSize="20" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></Border>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="4"><Label Text="{Binding Title}" FontAttributes="Bold" FontSize="15" /><Label Text="{Binding Detail}" Style="{StaticResource Muted}" LineBreakMode="TailTruncation" /></VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="2" HorizontalOptions="End" Spacing="4"><Label Text="{Binding Priority}" TextColor="{StaticResource Primary}" FontSize="12" /><Label Text="{Binding EstimatedMinutes, StringFormat='{}{0} 分钟'}" Style="{StaticResource Muted}" /></VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

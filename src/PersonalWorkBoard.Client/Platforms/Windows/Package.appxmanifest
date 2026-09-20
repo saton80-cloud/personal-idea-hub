@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+         xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+         IgnorableNamespaces="uap mp">
+  <Identity Name="com.saton80.personalworkboard" Publisher="CN=saton80" Version="0.2.0.0" />
+  <mp:PhoneIdentity PhoneProductId="74B564E8-4E8A-4DDD-AFB5-7D8422E76730" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <Properties>
+    <DisplayName>个人工作看板</DisplayName>
+    <PublisherDisplayName>saton80</PublisherDisplayName>
+    <Logo>$placeholder$.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26100.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+  <Resources><Resource Language="x-generate" /></Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
+      <uap:VisualElements DisplayName="个人工作看板" Description="个人工作与项目进度管理" Square150x150Logo="$placeholder$.png" Square44x44Logo="$placeholder$.png" BackgroundColor="#0B1F3A">
+        <uap:DefaultTile Square71x71Logo="$placeholder$.png" Wide310x150Logo="$placeholder$.png" Square310x310Logo="$placeholder$.png" />
+        <uap:SplashScreen Image="$placeholder$.png" />
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+  <Capabilities><Capability Name="internetClient" /><Capability Name="privateNetworkClientServer" /></Capabilities>
+</Package>

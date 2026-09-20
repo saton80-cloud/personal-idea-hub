@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell x:Class="PersonalWorkBoard.Client.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:pages="clr-namespace:PersonalWorkBoard.Client.Pages"
+       FlyoutBehavior="Flyout"
+       FlyoutBackgroundColor="#0B1F3A"
+       Shell.BackgroundColor="#0B1F3A"
+       Shell.ForegroundColor="White"
+       Shell.TitleColor="White"
+       Shell.TabBarBackgroundColor="#0B1F3A"
+       Shell.TabBarForegroundColor="#FFFFFF"
+       Shell.TabBarUnselectedColor="#85A0C4">
+    <Shell.FlyoutHeader>
+        <Grid Padding="24,34,24,24" RowDefinitions="Auto,Auto">
+            <Border WidthRequest="52" HeightRequest="52" BackgroundColor="#2274F0" StrokeThickness="0" HorizontalOptions="Start">
+                <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                <Label Text="✓" FontSize="26" TextColor="White" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+            </Border>
+            <VerticalStackLayout Grid.Row="1" Margin="0,16,0,0" Spacing="4">
+                <Label Text="个人工作看板" TextColor="White" FontSize="21" FontAttributes="Bold" />
+                <Label Text="让每一件工作都有下一步" TextColor="#9BB6D8" FontSize="12" />
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutHeader>
+    <FlyoutItem Title="今日工作" Route="dashboard">
+        <ShellContent Title="今日" ContentTemplate="{DataTemplate pages:DashboardPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="工作看板" Route="board">
+        <ShellContent Title="看板" ContentTemplate="{DataTemplate pages:BoardPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="同步中心" Route="sync">
+        <ShellContent Title="同步" ContentTemplate="{DataTemplate pages:SyncPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="设置" Route="settings">
+        <ShellContent Title="设置" ContentTemplate="{DataTemplate pages:SettingsPage}" />
+    </FlyoutItem>
+</Shell>

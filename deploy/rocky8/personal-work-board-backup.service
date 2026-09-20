@@ -1,0 +1,6 @@
+[Unit]
+Description=Backup Personal Work Board MySQL
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/pwb-backup

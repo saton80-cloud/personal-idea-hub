@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage x:Class="PersonalWorkBoard.Client.Pages.QrScannerPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             Title="扫描PC配对码" BackgroundColor="#071424">
+    <Grid RowDefinitions="*,Auto">
+        <zxing:CameraBarcodeReaderView x:Name="CameraView" BarcodesDetected="OnBarcodesDetected" />
+        <Border WidthRequest="270" HeightRequest="270" BackgroundColor="Transparent" Stroke="#58D3E4" StrokeThickness="3" HorizontalOptions="Center" VerticalOptions="Center">
+            <Border.StrokeShape><RoundRectangle CornerRadius="24" /></Border.StrokeShape>
+        </Border>
+        <Border Grid.Row="1" Margin="18" Padding="18" BackgroundColor="#E60B1F3A" Stroke="#284768">
+            <Border.StrokeShape><RoundRectangle CornerRadius="18" /></Border.StrokeShape>
+            <VerticalStackLayout Spacing="8">
+                <Label Text="将方框对准PC端二维码" TextColor="White" FontSize="18" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                <Label x:Name="StatusLabel" Text="二维码5分钟有效且只能使用一次。" TextColor="#AFC7E6" HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage x:Class="PersonalWorkBoard.Client.Pages.SettingsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="设置">
+    <ScrollView>
+        <VerticalStackLayout Padding="{OnIdiom Desktop='34,28', Phone='18,20'}" Spacing="20" MaximumWidthRequest="760" HorizontalOptions="Center">
+            <Label Text="设置" Style="{StaticResource PageTitle}" />
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="每日提醒" Style="{StaticResource SectionTitle}" />
+                    <Label Text="应用打开时会按以下时间提醒；后续版本加入系统后台通知。" Style="{StaticResource Muted}" />
+                    <Grid ColumnDefinitions="*,150" RowDefinitions="Auto,Auto" RowSpacing="12">
+                        <Label Text="上午计划" VerticalTextAlignment="Center" /><TimePicker x:Name="MorningPicker" Grid.Column="1" Format="HH:mm" />
+                        <Label Grid.Row="1" Text="晚上复盘" VerticalTextAlignment="Center" /><TimePicker x:Name="EveningPicker" Grid.Row="1" Grid.Column="1" Format="HH:mm" />
+                    </Grid>
+                    <Button Text="保存提醒时间" Clicked="OnSaveReminderClicked" />
+                </VerticalStackLayout>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="12"><Label Text="版本信息" Style="{StaticResource SectionTitle}" /><Grid ColumnDefinitions="*,Auto"><Label Text="客户端版本" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="V0.2.0" FontAttributes="Bold" /></Grid><Grid ColumnDefinitions="*,Auto"><Label Text="同步协议" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="API v1" FontAttributes="Bold" /></Grid></VerticalStackLayout>
+            </Border>
+            <Button Text="退出当前设备" Style="{StaticResource SecondaryButton}" Clicked="OnLogoutClicked" />
+            <Label x:Name="MessageLabel" Style="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

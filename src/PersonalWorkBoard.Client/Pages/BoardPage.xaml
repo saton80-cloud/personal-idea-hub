@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage x:Class="PersonalWorkBoard.Client.Pages.BoardPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="工作看板">
+    <Grid RowDefinitions="Auto,*" Padding="{OnIdiom Desktop='34,28', Phone='18,20'}" RowSpacing="18" MaximumWidthRequest="1380" HorizontalOptions="Center">
+        <Grid ColumnDefinitions="*,Auto">
+            <VerticalStackLayout Spacing="4"><Label Text="个人工作看板" Style="{StaticResource PageTitle}" /><Label Text="统一管理代码、网站、产品、新品开发和日常工作。" Style="{StaticResource Muted}" /></VerticalStackLayout>
+            <Button Grid.Column="1" Text="刷新" Style="{StaticResource SecondaryButton}" Command="{Binding RefreshCommand}" />
+        </Grid>
+        <Grid Grid.Row="1" ColumnDefinitions="{OnIdiom Desktop='360,*', Phone='*'}" RowDefinitions="{OnIdiom Desktop='*', Phone='Auto,*'}" ColumnSpacing="18" RowSpacing="16">
+            <Border Style="{StaticResource Card}">
+                <ScrollView><VerticalStackLayout Spacing="12">
+                    <Label Text="快速记录" Style="{StaticResource SectionTitle}" />
+                    <Label Text="先写下来，不要求一次想完整。" Style="{StaticResource Muted}" />
+                    <Label Text="类型" FontAttributes="Bold" Margin="0,8,0,0" />
+                    <Picker ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" BackgroundColor="White" />
+                    <Label Text="标题" FontAttributes="Bold" />
+                    <Entry Text="{Binding NewTitle}" Placeholder="一句话说明要做什么" />
+                    <Label Text="说明" FontAttributes="Bold" />
+                    <Editor Text="{Binding NewDescription}" Placeholder="目标、背景或验收要求" HeightRequest="120" />
+                    <Button Text="保存到工作收件箱" Command="{Binding AddCommand}" />
+                    <Label Text="{Binding Message}" Style="{StaticResource Muted}" />
+                </VerticalStackLayout></ScrollView>
+            </Border>
+            <CollectionView Grid.Column="{OnIdiom Desktop=1, Phone=0}" Grid.Row="{OnIdiom Desktop=0, Phone=1}" ItemsSource="{Binding Items}" SelectionMode="None">
+                <CollectionView.ItemsLayout><GridItemsLayout Orientation="Vertical" Span="{OnIdiom Desktop=3, Tablet=2, Phone=1}" HorizontalItemSpacing="12" VerticalItemSpacing="12" /></CollectionView.ItemsLayout>
+                <CollectionView.EmptyView><Border Style="{StaticResource Card}" Padding="34"><VerticalStackLayout Spacing="8"><Label Text="还没有工作项目" Style="{StaticResource SectionTitle}" HorizontalTextAlignment="Center" /><Label Text="从左侧记录第一件想推进的事情。" Style="{StaticResource Muted}" HorizontalTextAlignment="Center" /></VerticalStackLayout></Border></CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource Card}">
+                            <VerticalStackLayout Spacing="10">
+                                <Grid ColumnDefinitions="*,Auto"><Label Text="{Binding Type}" TextColor="{StaticResource Primary}" FontSize="12" FontAttributes="Bold" /><Border Grid.Column="1" Padding="9,4" BackgroundColor="{StaticResource PrimarySoft}" StrokeThickness="0"><Border.StrokeShape><RoundRectangle CornerRadius="10" /></Border.StrokeShape><Label Text="{Binding Status}" TextColor="{StaticResource Primary}" FontSize="11" /></Border></Grid>
+                                <Label Text="{Binding Title}" FontSize="17" FontAttributes="Bold" LineBreakMode="WordWrap" />
+                                <Label Text="{Binding Description}" Style="{StaticResource Muted}" MaxLines="3" LineBreakMode="TailTruncation" />
+                                <BoxView HeightRequest="1" Color="{StaticResource Border}" />
+                                <Grid ColumnDefinitions="*,Auto"><Label Text="下一步" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="{Binding Progress, StringFormat='{}{0}%'}" FontAttributes="Bold" TextColor="{StaticResource Primary}" /></Grid>
+                                <Label Text="{Binding NextAction}" FontSize="13" LineBreakMode="TailTruncation" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </Grid>
+</ContentPage>

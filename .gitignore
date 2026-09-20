@@ -1,0 +1,17 @@
+bin/
+obj/
+.vs/
+.idea/
+*.user
+*.suo
+*.db
+*.db-shm
+*.db-wal
+artifacts/
+publish/
+.env
+appsettings.Production.json
+*.keystore
+*.jks
+*.pfx
+*.snk
