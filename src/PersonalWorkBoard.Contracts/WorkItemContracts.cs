@@ -24,7 +24,7 @@ public sealed record WorkTaskDto(
     Guid? WorkItemId,
     string Title,
     string Detail,
-    TaskStatus Status,
+    PersonalWorkBoard.Domain.TaskStatus Status,
     PriorityLevel Priority,
     DateOnly? PlannedDate,
     DateTimeOffset? DueAt,
