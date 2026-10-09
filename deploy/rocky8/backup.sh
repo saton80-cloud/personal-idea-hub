@@ -10,5 +10,9 @@ source /etc/personal-work-board/server.env
 set +a
 DB_PASSWORD=$(printf '%s' "${ConnectionStrings__Main}" | sed -n 's/.*Password=\([^;]*\).*/\1/p')
 MYSQL_PWD="${DB_PASSWORD}" mysqldump -h127.0.0.1 -upwb_app --single-transaction --routines --triggers personal_work_board | gzip -9 >"${BACKUP_ROOT}/personal-work-board-${STAMP}.sql.gz"
+if [[ -d /var/lib/personal-work-board/voice ]]; then
+  tar -C /var/lib/personal-work-board -czf "${BACKUP_ROOT}/personal-work-board-${STAMP}-voice.tar.gz" voice
+fi
 find "${BACKUP_ROOT}" -type f -name 'personal-work-board-*.sql.gz' -mtime +30 -delete
+find "${BACKUP_ROOT}" -type f -name 'personal-work-board-*-voice.tar.gz' -mtime +30 -delete
 echo "备份完成：${BACKUP_ROOT}/personal-work-board-${STAMP}.sql.gz"

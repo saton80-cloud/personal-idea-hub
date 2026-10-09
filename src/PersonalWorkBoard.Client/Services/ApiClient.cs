@@ -71,6 +71,32 @@ public sealed class ApiClient
             ?? throw new InvalidOperationException("同步响应无效。 ");
     }
 
+    public async Task UploadVoiceAsync(string voiceId, string taskId, string filePath)
+    {
+        using var client = await CreateAuthenticatedClientAsync();
+        await using var stream = File.OpenRead(filePath);
+        using var content = new StreamContent(stream);
+        content.Headers.ContentType = new MediaTypeHeaderValue("audio/mp4");
+        using var response = await client.PutAsync($"api/voice/{voiceId}?taskId={taskId}", content);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task<Guid?> FindVoiceIdAsync(string taskId)
+    {
+        using var client = await CreateAuthenticatedClientAsync();
+        return await client.GetFromJsonAsync<Guid?>($"api/voice/by-task/{taskId}");
+    }
+
+    public async Task DownloadVoiceAsync(Guid id, string path)
+    {
+        using var client = await CreateAuthenticatedClientAsync();
+        using var response = await client.GetAsync($"api/voice/{id}", HttpCompletionOption.ResponseHeadersRead);
+        response.EnsureSuccessStatusCode();
+        await using var source = await response.Content.ReadAsStreamAsync();
+        await using var destination = File.Create(path);
+        await source.CopyToAsync(destination);
+    }
+
     public async Task<Guid> GetDeviceIdAsync()
     {
         var value = await SecureStorage.Default.GetAsync(DeviceKey);
