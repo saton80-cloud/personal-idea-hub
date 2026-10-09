@@ -50,6 +50,7 @@ public sealed class DashboardViewModel(LocalStore store, SyncService sync, Voice
         IsBusy = true;
         try
         {
+            await TranscribePendingAsync();
             try
             {
                 var result = await sync.SyncNowAsync();
@@ -64,16 +65,6 @@ public sealed class DashboardViewModel(LocalStore store, SyncService sync, Voice
             var tasks = await store.GetTodayTasksAsync();
             VoiceDrafts.Clear();
             foreach (var draft in (await store.GetVoiceNotesAsync()).Where(x => x.TaskId is null)) VoiceDrafts.Add(draft);
-            if (VoiceDrafts.FirstOrDefault(x => !x.Transcribed) is { } pending && await voice.CanTranscribeAsync())
-            {
-                try
-                {
-                    VoiceText = await voice.TranscribeAsync(pending);
-                    SelectVoice(pending);
-                    TaskMessage = "录音已在手机联网后转写，检查并修改文字再提交。";
-                }
-                catch (Exception ex) { TaskMessage = ex.Message; }
-            }
             ActiveProjects = items.Count(x => x.Status is "Planned" or "InProgress" or "Waiting");
             WaitingItems = items.Count(x => x.Status == "Waiting");
             CompletedToday = tasks.Count(x => x.Status == "Done");
@@ -84,6 +75,23 @@ public sealed class DashboardViewModel(LocalStore store, SyncService sync, Voice
         {
             IsBusy = false;
         }
+    }
+    public async Task TranscribePendingAsync()
+    {
+        if (!await voice.CanTranscribeAsync()) return;
+        var pending = (await store.GetVoiceNotesAsync()).FirstOrDefault(x => x.TaskId is null && !x.Transcribed);
+        if (pending is null) return;
+        try
+        {
+            var text = await voice.TranscribeAsync(pending);
+            if (_selectedVoice is null || _selectedVoice.Id == pending.Id)
+            {
+                SelectVoice(pending);
+                VoiceText = text;
+            }
+            TaskMessage = "录音已在手机联网后转写，检查并修改文字再提交。";
+        }
+        catch (Exception ex) { TaskMessage = ex.Message; }
     }
     private async Task AddTaskAsync()
     {
