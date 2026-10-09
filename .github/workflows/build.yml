@@ -77,10 +77,21 @@ jobs:
           }
           New-Item -ItemType Directory -Force artifacts/android-signing-tools | Out-Null
           Copy-Item "$($buildTools.FullName)\lib\apksigner.jar" artifacts/android-signing-tools/apksigner.jar
+      - name: Keep one signed APK and verify its certificate
+        shell: pwsh
+        run: |
+          $signed = @(Get-ChildItem artifacts/android -Filter '*-Signed.apk' -Recurse)
+          if ($signed.Count -ne 1) { throw "Expected exactly one signed APK, found $($signed.Count)." }
+          $apk = $signed[0].FullName
+          java -jar artifacts/android-signing-tools/apksigner.jar verify --verbose --print-certs $apk
+          if ($LASTEXITCODE -ne 0) { throw "APK signature verification failed." }
+          New-Item -ItemType Directory -Force artifacts/installable | Out-Null
+          Copy-Item $apk artifacts/installable/PersonalWorkBoard-Android-0.4.0-Signed.apk
+          Get-FileHash artifacts/installable/PersonalWorkBoard-Android-0.4.0-Signed.apk -Algorithm SHA256 | Format-List
       - uses: actions/upload-artifact@v4
         with:
-          name: personal-work-board-android-apk
-          path: artifacts/android/**/*.apk
+          name: personal-work-board-android-signed-only
+          path: artifacts/installable/PersonalWorkBoard-Android-0.4.0-Signed.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:

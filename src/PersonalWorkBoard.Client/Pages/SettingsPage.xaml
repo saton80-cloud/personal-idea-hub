@@ -18,7 +18,16 @@
                 </VerticalStackLayout>
             </Border>
             <Border Style="{StaticResource Card}">
-                <VerticalStackLayout Spacing="12"><Label Text="版本信息" Style="{StaticResource SectionTitle}" /><Grid ColumnDefinitions="*,Auto"><Label Text="客户端版本" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="V0.3.1" FontAttributes="Bold" /></Grid><Grid ColumnDefinitions="*,Auto"><Label Text="同步协议" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="API v1 · 最新时间优先" FontAttributes="Bold" /></Grid></VerticalStackLayout>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="语音转写（仅手机联网时）" Style="{StaticResource SectionTitle}" />
+                    <Label Text="可配置兼容 OpenAI Whisper 转写接口的 HTTPS 服务。API Key 只保存在手机安全存储中；录音转写时会发送至所配置的服务。" Style="{StaticResource Muted}" />
+                    <Entry x:Name="SpeechEndpoint" Placeholder="https://api.openai.com/v1/audio/transcriptions" Keyboard="Url" />
+                    <Entry x:Name="SpeechKey" Placeholder="输入 API Key（留空则保持原值）" IsPassword="True" />
+                    <Button Text="保存转写设置" Clicked="OnSaveSpeechClicked" />
+                </VerticalStackLayout>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="12"><Label Text="版本信息" Style="{StaticResource SectionTitle}" /><Grid ColumnDefinitions="*,Auto"><Label Text="客户端版本" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="V0.4.0" FontAttributes="Bold" /></Grid><Grid ColumnDefinitions="*,Auto"><Label Text="同步协议" Style="{StaticResource Muted}" /><Label Grid.Column="1" Text="API v1 · 最新时间优先" FontAttributes="Bold" /></Grid></VerticalStackLayout>
             </Border>
             <Button Text="退出当前设备" Style="{StaticResource SecondaryButton}" Clicked="OnLogoutClicked" />
             <Label x:Name="MessageLabel" Style="{StaticResource Muted}" HorizontalTextAlignment="Center" />

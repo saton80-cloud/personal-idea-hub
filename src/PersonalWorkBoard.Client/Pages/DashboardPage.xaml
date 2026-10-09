@@ -58,6 +58,26 @@
                             <Button Grid.Column="{OnIdiom Desktop=3, Phone=0}" Grid.Row="{OnIdiom Desktop=0, Phone=3}"
                                     Text="加入今天" Command="{Binding AddTaskCommand}" HorizontalOptions="End" />
                         </Grid>
+                        <VerticalStackLayout Spacing="9" IsVisible="{OnIdiom Phone=True, Desktop=False}">
+                            <Label Text="语音任务" Style="{StaticResource SectionTitle}" />
+                            <Label Text="断网可录音；手机联网后转为文字。修改文字并确认，录音和文字会一起保留。" Style="{StaticResource Muted}" />
+                            <HorizontalStackLayout Spacing="8">
+                                <Button Text="开始录音" Command="{Binding StartVoiceCommand}" />
+                                <Button Text="结束并保存" Command="{Binding StopVoiceCommand}" IsEnabled="{Binding IsRecording}" Style="{StaticResource SecondaryButton}" />
+                            </HorizontalStackLayout>
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding VoiceDrafts}" Spacing="6">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Text="选择待处理录音" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectVoiceCommand}" CommandParameter="{Binding .}" Style="{StaticResource SecondaryButton}" />
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout IsVisible="{Binding HasVoiceDraft}" Spacing="8">
+                                <Button Text="联网转为文字" Command="{Binding TranscribeCommand}" Style="{StaticResource SecondaryButton}" />
+                                <Editor Text="{Binding VoiceText}" Placeholder="转写结果可编辑；也可以直接输入文字" AutoSize="TextChanges" MinimumHeightRequest="90" />
+                                <Label Text="编辑完成后点击上方‘加入今天’确认。" Style="{StaticResource Muted}" />
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
                         <Label Text="{Binding TaskMessage}" Style="{StaticResource Muted}" />
                     </VerticalStackLayout>
                 </Border>
@@ -68,7 +88,7 @@
                                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
                                     <Border WidthRequest="42" HeightRequest="42" BackgroundColor="{StaticResource PrimarySoft}" StrokeThickness="0"><Border.StrokeShape><RoundRectangle CornerRadius="13" /></Border.StrokeShape><Label Text="✓" TextColor="{StaticResource Primary}" FontSize="20" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></Border>
                                     <VerticalStackLayout Grid.Column="1" Spacing="4"><Label Text="{Binding Title}" FontAttributes="Bold" FontSize="15" /><Label Text="{Binding Detail}" Style="{StaticResource Muted}" LineBreakMode="TailTruncation" /></VerticalStackLayout>
-                                    <VerticalStackLayout Grid.Column="2" HorizontalOptions="End" Spacing="4"><Label Text="{Binding Priority}" TextColor="{StaticResource Primary}" FontSize="12" /><Label Text="{Binding EstimatedMinutes, StringFormat='{}{0} 分钟'}" Style="{StaticResource Muted}" /></VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="2" HorizontalOptions="End" Spacing="4"><Label Text="{Binding Priority}" TextColor="{StaticResource Primary}" FontSize="12" /><Label Text="{Binding EstimatedMinutes, StringFormat='{}{0} 分钟'}" Style="{StaticResource Muted}" /><Button Text="录音" FontSize="12" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PlayVoiceCommand}" CommandParameter="{Binding .}" /></VerticalStackLayout>
                                 </Grid>
                             </Border>
                         </DataTemplate>

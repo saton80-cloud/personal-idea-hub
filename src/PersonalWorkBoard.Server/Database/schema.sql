@@ -111,6 +111,17 @@ CREATE TABLE IF NOT EXISTS progress_records (
     INDEX idx_progress_item_time (work_item_id, created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE IF NOT EXISTS voice_notes (
+    id CHAR(36) PRIMARY KEY,
+    owner_id CHAR(36) NOT NULL,
+    task_id CHAR(36) NOT NULL,
+    file_size BIGINT NOT NULL,
+    created_at DATETIME(6) NOT NULL,
+    CONSTRAINT fk_voice_owner FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_voice_task FOREIGN KEY (task_id) REFERENCES work_tasks(id) ON DELETE CASCADE,
+    INDEX idx_voice_task (owner_id, task_id, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 CREATE TABLE IF NOT EXISTS change_requests (
     id CHAR(36) PRIMARY KEY,
     owner_id CHAR(36) NOT NULL,

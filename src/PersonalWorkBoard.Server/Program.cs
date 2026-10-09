@@ -18,6 +18,7 @@ builder.Services.AddSingleton<DatabaseInitializer>();
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<PairingService>();
 builder.Services.AddSingleton<SyncService>();
+builder.Services.AddSingleton<VoiceFileService>();
 builder.WebHost.UseUrls("http://0.0.0.0:5088");
 
 var app = builder.Build();
@@ -75,6 +76,31 @@ app.MapPost("/api/sync/push", async (HttpContext context, PushChangesRequest req
     {
         return Results.BadRequest(new { error = ex.Message });
     }
+});
+
+app.MapPut("/api/voice/{id:guid}", async (Guid id, Guid taskId, HttpContext context, AuthService auth, VoiceFileService voice, CancellationToken ct) =>
+{
+    var principal = await auth.AuthenticateAsync(context.Request, ct);
+    if (principal is null) return Results.Unauthorized();
+    if (context.Request.ContentLength is null or <= 0 or > 25 * 1024 * 1024 || context.Request.ContentType != "audio/mp4")
+        return Results.BadRequest(new { error = "仅接受 25 MB 以内的 M4A 录音" });
+    return await voice.SaveAsync(principal.UserId, taskId, id, context.Request.Body, ct)
+        ? Results.Ok() : Results.NotFound();
+});
+
+app.MapGet("/api/voice/by-task/{taskId:guid}", async (Guid taskId, HttpContext context, AuthService auth, VoiceFileService voice, CancellationToken ct) =>
+{
+    var principal = await auth.AuthenticateAsync(context.Request, ct);
+    if (principal is null) return Results.Unauthorized();
+    return Results.Ok(await voice.FindByTaskAsync(principal.UserId, taskId, ct));
+});
+
+app.MapGet("/api/voice/{id:guid}", async (Guid id, HttpContext context, AuthService auth, VoiceFileService voice, CancellationToken ct) =>
+{
+    var principal = await auth.AuthenticateAsync(context.Request, ct);
+    if (principal is null) return Results.Unauthorized();
+    var path = await voice.GetPathAsync(principal.UserId, id, ct);
+    return path is null ? Results.NotFound() : Results.File(path, "audio/mp4", enableRangeProcessing: true);
 });
 
 app.Run();

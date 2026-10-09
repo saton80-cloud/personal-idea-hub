@@ -14,6 +14,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<LocalStore>();
         builder.Services.AddSingleton<ApiClient>();
         builder.Services.AddSingleton<SyncService>();
+        builder.Services.AddSingleton<VoiceService>();
         builder.Services.AddSingleton<ReminderService>();
         builder.Services.AddSingleton<AppShell>();
         builder.Services.AddTransient<StartupPage>();

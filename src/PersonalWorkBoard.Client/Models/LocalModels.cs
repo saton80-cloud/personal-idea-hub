@@ -43,6 +43,18 @@ public sealed class LocalWorkTask
     public string? DeletedAt { get; set; }
 }
 
+[Table("voice_notes")]
+public sealed class LocalVoiceNote
+{
+    [PrimaryKey] public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string? TaskId { get; set; }
+    public string AudioPath { get; set; } = string.Empty;
+    public string Transcript { get; set; } = string.Empty;
+    public bool Transcribed { get; set; }
+    public bool Uploaded { get; set; }
+    public string CreatedAt { get; set; } = DateTimeOffset.UtcNow.ToString("O");
+}
+
 [Table("pending_mutations")]
 public sealed class LocalPendingMutation
 {

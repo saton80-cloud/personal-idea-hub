@@ -16,6 +16,7 @@ public sealed class LocalStore
     {
         await _database.CreateTableAsync<LocalWorkItem>();
         await _database.CreateTableAsync<LocalWorkTask>();
+        await _database.CreateTableAsync<LocalVoiceNote>();
         await _database.CreateTableAsync<LocalPendingMutation>();
         await _database.CreateTableAsync<LocalClientState>();
         await _database.CreateTableAsync<LocalSyncConflict>();
@@ -44,6 +45,18 @@ public sealed class LocalStore
     {
         await InitializeAsync();
         await _database.InsertOrReplaceAsync(task);
+    }
+
+    public async Task<List<LocalVoiceNote>> GetVoiceNotesAsync()
+    {
+        await InitializeAsync();
+        return await _database.Table<LocalVoiceNote>().OrderByDescending(x => x.CreatedAt).ToListAsync();
+    }
+
+    public async Task SaveVoiceNoteAsync(LocalVoiceNote note)
+    {
+        await InitializeAsync();
+        await _database.InsertOrReplaceAsync(note);
     }
 
     public async Task EnqueueAsync(LocalPendingMutation mutation)
