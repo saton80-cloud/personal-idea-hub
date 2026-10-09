@@ -11,8 +11,8 @@ public sealed class VoiceService(LocalStore store, ApiClient api)
     private const string DefaultEndpoint = "https://api.openai.com/v1/audio/transcriptions";
 #if ANDROID
     private global::Android.Media.MediaRecorder? _recorder;
-#endif
     private string? _recordingPath;
+#endif
 
     public string Endpoint => Preferences.Default.Get(EndpointName, DefaultEndpoint);
     public async Task<bool> CanTranscribeAsync() =>
@@ -38,7 +38,9 @@ public sealed class VoiceService(LocalStore store, ApiClient api)
         _recordingPath = Path.Combine(folder, $"{Guid.NewGuid():N}.m4a");
         try
         {
-            var recorder = new global::Android.Media.MediaRecorder();
+            var recorder = OperatingSystem.IsAndroidVersionAtLeast(31)
+                ? new global::Android.Media.MediaRecorder(Platform.AppContext)
+                : new global::Android.Media.MediaRecorder();
             _recorder = recorder;
             recorder.SetAudioSource(global::Android.Media.AudioSource.Mic);
             recorder.SetOutputFormat(global::Android.Media.OutputFormat.Mpeg4);

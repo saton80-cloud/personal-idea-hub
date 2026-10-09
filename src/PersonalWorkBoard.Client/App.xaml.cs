@@ -8,13 +8,15 @@ public partial class App : Application
     private readonly IServiceProvider _services;
     private readonly SyncService _sync;
     private readonly ApiClient _api;
+    private readonly VoiceService _voice;
 
-    public App(IServiceProvider services, SyncService sync, ApiClient api)
+    public App(IServiceProvider services, SyncService sync, ApiClient api, VoiceService voice)
     {
         InitializeComponent();
         _services = services;
         _sync = sync;
         _api = api;
+        _voice = voice;
         Connectivity.ConnectivityChanged += OnConnectivityChanged;
     }
 
@@ -44,7 +46,11 @@ public partial class App : Application
     {
         try
         {
-            if (await _api.HasSessionAsync()) await _sync.SyncNowAsync();
+            if (await _api.HasSessionAsync())
+            {
+                await _sync.SyncNowAsync();
+                await _voice.UploadPendingAsync();
+            }
         }
         catch
         {
